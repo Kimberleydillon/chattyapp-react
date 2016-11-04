@@ -4,21 +4,41 @@ import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 
 class App extends Component {
+  // constructor (props){
+  //   super(props)
+  //   this.state ={data:[]}
+  // }
+  componentDidMount() {
+    console.log("App ComponentDidMount")
+    //using third party libaries
+    //also ajax requests
+    // $.get("./data.js")
+    // .then ((data) => {
+    // this.setState({data:data})
+    // })
+    // .catch((err)=> {
+    //   alert("Could not get data");
+    //   })// set the data as the state here
+
+    }
   render() {
-    return (
-        <div class="wrapper">
-          <nav>
-            <h1>Shut up, Kyle</h1>
-            </nav>
-          <div id="message-list">
-          <MessageList />
-          <Message/>
-      </div>
-      <ChatBar/>
-        </div>
+    console.log("app render")
+  return (
+  <div className="wrapper">
+    <nav>
+      <h1>Shut up, Kyle</h1>
+    </nav>
+    <div className="message-list">
+      <MessageList />
+      <Message/>
+     </div>
+    <ChatBar/>
+  </div>
     );
   }
 }
+//currentUser={this.state.currentUser}
+//ReactDOM.render(<Chatbar/>, document.getElementById('react-root'));
 export default App;
 //The index.jsx file mounts our App component onto a DOM element, in this case, react-root.
 

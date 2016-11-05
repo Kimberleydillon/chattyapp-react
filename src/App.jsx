@@ -6,10 +6,11 @@ import ChatBar from './ChatBar.jsx';
 
 class App extends Component {
   constructor(props){
-    console.log("App constructor")
     super(props);
+    this.pushNewMessage = this.pushNewMessage.bind(this);
+    console.log("App constructor")
     this.state = {
-      currentUser: {name:""},
+      currentUser: {name:"bob"},
       messages: [],
       //userCount:0
     }
@@ -27,6 +28,12 @@ class App extends Component {
   }, 3000);
   }
 
+pushNewMessage(name, content){
+  console.log(name,content)
+  const newMessage = {username: name, content: content};
+  const messages= this.state.messages.concat(newMessage)
+  this.setState({messages:messages})
+}
   render() {
     console.log("rendered");
     return (
@@ -36,7 +43,7 @@ class App extends Component {
             </nav>
           <MessageList messages={this.state.messages} />
           <Message />
-      <ChatBar currentUser={this.state.currentUser} />
+      <ChatBar currentUser={this.state.currentUser} newMessage={this.pushNewMessage}/>
         </div>
     );
   }

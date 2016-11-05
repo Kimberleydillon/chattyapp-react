@@ -25,7 +25,8 @@ class Chatbar extends Component {
     return (
       <footer>
     <input id="username" ref="username-input-box" type="text"  placeholder="Your Name (Optional)" />
-  </footer>
+    <input id="new-message" ref="message-input-box" type="text" placeholder="Type a message and hit ENTER" onKeyDown={this.handleSubmit}/>
+   </footer>
     );
   }
 }

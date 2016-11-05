@@ -3,22 +3,54 @@ import Message from './Message.jsx';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 
+
 class App extends Component {
+  constructor(props){
+    console.log("App constructor")
+    super(props);
+    this.state = {
+      currentUser: {name:""},
+      messages: [
+        {
+          id: 1,
+          username: "Bob",
+          content: "Has anyone seen my marbles?"
+        },
+        { id:2,
+          username: "Anonymous",
+          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
+        }
+      ],
+      //userCount:0
+    }
+  }
+  componentDidMount(){
+    console.log("componentDidMount <App />");
+  setTimeout(() => {
+    console.log("Simulating incoming message");
+    // Add a new message to the list of messages in the data store
+    const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
+    const messages = this.state.messages.concat(newMessage)
+    // Update the state of the app component.
+    // Calling setState will trigger a call to render() in App and all child components.
+    this.setState({messages: messages})
+  }, 3000);
+  }
+
   render() {
+    console.log("rendered");
     return (
-        <div class="wrapper">
+        <div className="wrapper">
           <nav>
             <h1>Shut up, Kyle</h1>
             </nav>
-          <div id="message-list">
-          <MessageList />
-          <Message/>
-      </div>
-      <ChatBar/>
+          <MessageList messages={this.state.messages} />
+          <Message />
+      <ChatBar currentUser={this.state.currentUser} realTimeMessage={}/>
         </div>
     );
   }
-}
+ }
 export default App;
 //The index.jsx file mounts our App component onto a DOM element, in this case, react-root.
 
@@ -28,17 +60,3 @@ export default App;
     // .. code in the render function
   //}
 //}
-
-// var data = {
-//   currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-//   messages: [
-//     {
-//       username: "Bob",
-//       content: "Has anyone seen my marbles?",
-//     },
-//     {
-//       username: "Anonymous",
-//       content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-//     }
-//   ]
-// };

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
-class Chatbar extends Component {
+
+class ChatBar extends Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,14 +21,21 @@ class Chatbar extends Component {
     }
   }
 
-
   render() {
     return (
       <footer>
-    <input id="username" ref="username-input-box" type="text"  placeholder="Your Name (Optional)" />
-    <input id="new-message" ref="message-input-box" type="text" placeholder="Type a message and hit ENTER" onKeyDown={this.handleSubmit}/>
-   </footer>
-    );
+        <input id="username"
+        ref="username-input-box"
+        type="text"
+        placeholder={this.props.currentUser.name} />
+        <input
+          id="new-message"
+          ref="message-input-box"
+          type="text"
+          placeholder="Type a message and hit ENTER"
+          onKeyDown={this.handleSubmit} />
+      </footer>
+      );
+    }
   }
-}
-export default Chatbar;
+export default ChatBar;

@@ -3,71 +3,81 @@ import Message from './Message.jsx';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 
-
 class App extends Component {
-  constructor(props){
+
+  constructor(props) {
     super(props);
     this.pushNewMessage = this.pushNewMessage.bind(this);
-    console.log("App constructor")
+
     this.state = {
-      currentUser: {name:"bob"},
+      currentUser: {name: "Anon"}, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [],
-      //userCount:0
-    }
-  }
+      userCount:0
+    };
+  };
+
   componentDidMount(){
     this.socket = new WebSocket("ws://localhost:4000");
-    this.socket.onopen =(event) =>{
-      console.log("Connected to Server.")}
-    this.socket.onmessage= (event) => {
-        const newMessage = JSON.parse(event.data)
-        const post = this.state.message.concat(newMessage)
-        this.state({messages:post})
-      }
+    this.socket.onopen = (event) => {
+      console.log("Connected to Server.")
+      this.socket.onmessage = (event) => {
+        console.log(event);
+        let newMessage = JSON.parse(event.data);
+          switch(newMessage.type) {
+            case "postMessage":
+            case "postNotification":
+              let post = this.state.messages.concat(newMessage)
+              this.setState({messages: post})
+              break;
+            case "userCount":
+              this.setState({userCount: newMessage.usersOnline})
+              break;
+          }
+        }
+    };
+  };
 
-    console.log("componentDidMount <App />");
-  setTimeout(() => {
-    console.log("Simulating incoming message");
-    // Add a new message to the list of messages in the data store
-    const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-    const messages = this.state.messages.concat(newMessage)
-    // Update the state of the app component.
-    // Calling setState will trigger a call to render() in App and all child components.
-    this.setState({messages: messages})
-  }, 3000);
-  }
+  sendMessageToServer(messageObject){
+    console.log(messageObject)
+    this.socket.send(JSON.stringify(messageObject))
+  };
 
-sendMessageToServer (messageObject){
-  console.log(messageObject)
-  this.socket.send(JSON.stringify(messageObject))
-}
+  pushNewMessage(name, content){
+    if (this.state.currentUser.name !== name) {
+      this.postNewNotification(name)
+      this.state.currentUser.name = name
+      this.setState({currentUser: this.state.currentUser})
+    };
+     const newMessage = {
+      type: "postMessage",
+      username: name,
+      content: content,
+    };
+  this.sendMessageToServer(newMessage)
+  };
 
-pushNewMessage(name, content){
-  console.log(name,content)
-  const newMessage = {username: name, content: content};
-  const messages= this.state.messages.concat(newMessage)
-  this.setState({messages:messages})
-}
+  postNewNotification(newUsername){
+     const newMessage = {
+      type: "postNotification",
+      oldUsername: this.state.currentUser.name,
+      newUsername: newUsername,
+    };
+  this.sendMessageToServer(newMessage)
+  };
+
   render() {
-    console.log("rendered");
     return (
-        <div className="wrapper">
-          <nav>
-            <h1>Shut up, Kyle</h1>
-            </nav>
-          <MessageList messages={this.state.messages} />
-          <Message />
-      <ChatBar currentUser={this.state.currentUser} newMessage={this.pushNewMessage}/>
+      <div className="wrapper">
+        <nav>
+          <h2>Shut Up, Kyle</h2>
+          <h4>users on {this.state.userCount}</h4>
+        </nav>
+        <div id="message-list">
+          <MessageList data={this.state.messages} />
         </div>
+        <ChatBar currentUser={this.state.currentUser} newMessage={this.pushNewMessage} />
+      </div>
     );
-  }
- }
+  };
+};
 export default App;
-//The index.jsx file mounts our App component onto a DOM element, in this case, react-root.
-
-// ES6 way using class
-//class App extends React.Component {
-  //render() {
-    // .. code in the render function
-  //}
-//}
